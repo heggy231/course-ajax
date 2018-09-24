@@ -68,3 +68,40 @@ function addImage(){
 
 Note: https://unsplash.com/documentation
 - Client-ID here is app access key under the dev account
+- set debugger to see XHR response.
+
+function addImage(){
+        // debugger; 
+        // 'this' value is XMLHttpRequest XHR object itself
+        // response is stored in responseText: {"total":13,"total_pages":1,...}
+        // parse the JSON into JS response Text
+        // Under Network>Response tab: see JSON response which show all text
+        const data = JSON.parse(this.responseText);
+        // get the first image
+        const firstImage = data.results[0];
+
+        // this ensures some image are returned
+        if (data && data.results && data.results[0]){
+            // add figure element to pg with image pointing its unsplash resource and a caption of artist name.  
+            htmlContent = `<figure>
+                <img src="${firstImage.urls.regular}" alt="${searchForText}">
+                <figcaption>${searchedForText} by ${firstImage.user.name}</figcaption>
+            </figure>`;
+        // no image has returned we throw and No images available message
+        } else {
+            htmlContent = `<div class="error-no-image">No images available</div>`;
+        }
+        // Add this inside the responseContainer as the 1st elemen
+        responseContainer.insertAdjacentHTML('afterbegin', htmlContent);
+}
+
+- Since the New York Times doesn't require a specific header, we don't need to do anything special. We'll set its `onload` property to the function `addArticles` that we'll flesh out in a minute:
+
+  function addArticles () {}
+  const articleRequest = new XMLHttpRequest();
+  articleRequest.onload = addArticles;
+  articleRequest.open('GET', `http://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchedForText}&api-key=<your-API-key-goes-here>`);
+  articleRequest.send();
+
+- Next challenge, add NewYork Times articles to the page. 
+
